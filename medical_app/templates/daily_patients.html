@@ -1,0 +1,103 @@
+{% extends 'base/base.html'%}
+{% set active_item = 'daily_patients' %}
+{% block title%}
+    <title>Danh Sách Bệnh Nhân</title>
+{% endblock %}
+{% block body %}
+<div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#addPatient">Tạo Bệnh Nhân Mới</button>
+    <form class="mb-0">
+        <div class="d-flex">
+            <div class="form-group mr-2">
+                <label class="label-control">Datetime Picker</label>
+                <input type="date" class="form-control datetimepicker" value="21/06/2018"/>
+            </div>
+            <button type="submit" class="btn btn-info">Lọc</button>
+        </div>
+    </form>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Thêm Bệnh Nhân</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="patientName" class="bmd-label-floating">Họ và Tên</label>
+          <input type="text" class="form-control" id="patientName">
+        </div>
+        <div class="form-group">
+            <label for="patientGender">Giới Tính</label>
+            <select class="form-group selectpicker" data-style="btn btn-link" id="patientGender">
+                <option>Nam</option>
+                <option>Nữ</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="patientYear" class="bmd-label-floating">Năm Sinh</label>
+            <input type="number" class="form-control" id="patientYear">
+        </div>
+        <div class="form-group">
+            <label for="patientAddress" class="bmd-label-floating">Địa Chỉ</label>
+            <textarea class="form-control" id="patientAddress"></textarea>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-info">Thêm</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div class="card">
+    <div class="card-header card-header-info">
+      <h4 class="card-title ">Danh Sách Khám Bệnh</h4>
+      <p class="card-category">Ngày 30/12/2020</p>
+    </div>
+    <div class="card-body">
+
+      <div class="table-responsive">
+        <table class="table" id="patients">
+            <thead class="text-info">
+                <th>STT</th>
+                <th>Họ Tên</th>
+                <th>Giới Tính</th>
+                <th>Năm Sinh</th>
+                <th>Địa Chỉ</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Minh Nhật</td>
+                    <td>Nam</td>
+                    <td>2000</td>
+                    <td>33 Phan Văn Trị, P5, Gò Vấp</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Minh Nhật</td>
+                    <td>Nam</td>
+                    <td>2000</td>
+                    <td>33 Phan Văn Trị, P5, Gò Vấp</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready( function () {
+            $('#').DataTable({
+                "searching": false
+            });
+        } );
+    </script>
+{% endblock %}

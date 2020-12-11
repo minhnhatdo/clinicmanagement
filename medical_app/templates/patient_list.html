@@ -1,0 +1,67 @@
+{% extends 'base/base.html' %}
+{% set active_item = 'patient_list' %}
+{% block title %}
+    <title>Danh Sách Bệnh Nhân</title>
+{% endblock %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header card-header-info">
+      <h4 class="card-title ">Danh Sách Bệnh Nhân</h4>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table" id="patients">
+            <thead class="text-info">
+                <th>STT</th>
+                <th>Họ Tên</th>
+                <th>Ngày Khám</th>
+                <th>Loại Bệnh</th>
+                <th>Triệu Chứng</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Minh Nhật</td>
+                    <td>20/10/2000</td>
+                    <td>Rối loạn tiền đình</td>
+                    <td>Đau đầu, nhức đầu kéo dài</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Minh Nhật</td>
+                    <td>20/10/2000</td>
+                    <td>Rối loạn tiền đình</td>
+                    <td>Đau đầu, nhức đầu kéo dài</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<button class="btn btn-primary" onclick="convert()">Convert</button>
+{% endblock %}
+
+{% block script %}
+<script>
+        var convertTableToJson = function()
+            {
+                var rows = [];
+                $('table tr').each(function(i, n){
+                    var $row = $(n);
+                    rows.push({
+                        stt: $row.find('td:eq(0)').text(),
+                        name:   $row.find('td:eq(1)').text(),
+                        dob:    $row.find('td:eq(2)').text(),
+                        diagnose:       $row.find('td:eq(3)').text(),
+                        symptom:         $row.find('td:eq(4)').text(),
+                    });
+                });
+
+                return JSON.stringify(rows);
+            };
+        function convert(){
+            console.log(convertTableToJson ());
+        };
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+<div class="sidebar" data-color="azure" data-background-color="white" data-image="{{ url_for('static', filename='images/logo.jpg') }}">
+  <!--
+  Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+  Tip 2: you can also add an image using data-image tag
+-->
+  <div class="logo">
+    <a href="{{ url_for('index') }}" class="simple-text logo-normal">NANCY MEDICAL</a>
+  </div>
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+      <li class="nav-item {% if active_item == 'daily_patients' %}active{% endif %}">
+        <a class="nav-link " href="{{ url_for('daily_patients') }}">
+          <i class="material-icons">list</i>
+          <p>Bệnh Nhân Trong Ngày</p>
+        </a>
+      </li>
+      <li class="nav-item {% if active_item == 'medical_form' %}active{% endif %}">
+         <a class="nav-link " href="{{ url_for('medical_form') }}">
+          <i class="material-icons">create</i>
+          <p>Tạo Phiếu Khám</p>
+        </a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" data-toggle="collapse" href="#reportCollapse" aria-expanded="false" aria-controls="collapseExample">
+            <i class="material-icons">show_chart</i>
+            <p>Báo Cáo</p>
+          </a>
+          <div class="collapse {% if active_item == 'patient_list' or active_item == 'sales_report' or active_item == 'drugs_report' %}show{% endif %}" id="reportCollapse">
+            <ul class="nav">
+              <li class="nav-item {% if active_item == 'patient_list' %}active{% endif %}">
+                <a class="nav-link ml-4" href="{{ url_for('patient_list') }}">Danh Sách Bệnh Nhân</a>
+              </li>
+              <li class="nav-item {% if active_item == 'sales_report' %}active{% endif %}">
+                <a class="nav-link ml-4" href="{{ url_for('sales_report') }}">Báo Cáo Doanh Thu</a>
+              </li>
+              <li class="nav-item {% if active_item == 'drugs_report' %}active{% endif %}">
+                <a class="nav-link ml-4" href="{{ url_for('drugs_report') }}">Báo Cáo Sử Dụng Thuốc</a>
+              </li>
+            </ul>
+          </div>
+      </li>
+    </ul>
+  </div>
+</div>
