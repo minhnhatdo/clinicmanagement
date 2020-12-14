@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, Blueprint, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, AdminIndexView
 from flask_login import LoginManager, current_user
@@ -16,11 +16,11 @@ db = SQLAlchemy(app=app)
 
 class UserModelView(AdminIndexView):
     def is_accessible(self):
-        return current_user.is_active and current_user.is_authenticated
+        return current_user.is_active and current_user.is_authenticated and current_user.user_role == 'admin'
 
     def _handle_view(self, name):
         if not self.is_accessible():
-            return redirect('/login')
+            return redirect(url_for("index"))
 
 
 admin = Admin(app=app, name="Quản lý phòng mạch", template_mode="bootstrap4", index_view=UserModelView())

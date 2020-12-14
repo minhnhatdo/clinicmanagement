@@ -3,19 +3,39 @@
 {% block title %}
     <title>Tạo Phiếu Khám</title>
 {% endblock %}
+{% block style %}
+  <style>
+    .twitter-typeahead{
+      min-width: 90%;
+    }
+    .tt-menu{
+      background: whitesmoke;
+      border: 1px solid black;
+      width: 100%;
+      padding: 5px;
+    }
+  </style>
+{% endblock style %}
 
 {% block body %}
 <div class="card">
     <div class="card-header card-header-info">
-        <h4 class="card-title">Tạo Phiếu Khám Bệnh</h4>
+        <h4 class="card-title">Tạo Phiếu Khám Bệnh {{ current_user.username }}</h4>
     </div>
     <div class="card-body">
         <form>
             <div class="form-row">
                 <div class="col">
                      <div class="form-group">
-                        <label for="customerName" class="bmd-label-floating">Tên Khách Hàng</label>
-                        <input type="text" class="form-control" id="customerName">
+                        <label for="customerName" class="bmd-label-floating">Tên Bệnh Nhân</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control typeahead" id="customerName">
+                            <div class="input-group-prepend">
+                                <a class="btn btn-info btn-fab btn-fab-mini btn-round" data-toggle="modal" data-target="#addPatient">
+                                    <i class="material-icons">add</i>
+                                </a>
+                            </div>
+                        </div>
                       </div>
                 </div>
                 <div class="col">
@@ -29,13 +49,18 @@
                 <div class="col">
                      <div class="form-group">
                         <label for="symptom" class="bmd-label-floating">Triệu Chứng</label>
-                         <textarea class="form-control" id="symptom" rows="2"></textarea>
+                        <textarea class="form-control" id="symptom" rows="3"></textarea>
                      </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
-                        <label for="diagnose" class="bmd-label-floating">Chẩn Đoán</label>
-                        <textarea class="form-control" id="diagnose" rows="2"></textarea>
+                        <label for="diagnose">Chẩn Đoán</label>
+                        <select class="form-control" id="diagnose" data-style="btn btn-link">
+                          <option value="" selected disabled hidden></option>
+                          {% for item in config['desease'] %}
+                            <option value="{{ item }}" >{{ item }}</option>
+                          {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
@@ -53,19 +78,12 @@
                     <th>Cách dùng</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Paracetamol</td>
-                        <td>Vỉ</td>
-                        <td>2</td>
-                        <td>Sáng tối</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
         <div class="d-flex justify-content-end">
             <button class="btn btn-danger mr-2" type="button" data-toggle="modal" data-target="#addMedicineModal">Thêm thuốc</button>
-            <button class="btn btn-success">Tạo Phiếu Khám Và Xuất Hoá Đơn</button>
+            <button class="btn btn-success" onclick="createMedicalForm()">Tạo Phiếu Khám Và Xuất Hoá Đơn</button>
         </div>
     </div>
 </div>
@@ -82,15 +100,13 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="medicineSelect">Thuốc</label>
-          <select class="form-control selectpicker" data-style="btn btn-link" id="medicineSelect">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
+          <select class="form-control" data-style="btn btn-link" id="medicineSelect" onchange="medicineSelect()">
+            <option value="" disabled selected hidden></option>
           </select>
         </div>
         <div class="form-group mt-3">
-            <label for="medicineUnit" class="bmd-label-floating">Đơn vị</label>
-            <input type="text" class="form-control" id="medicineUnit" disabled>
+            <label for="medicineUnit">Đơn vị</label>
+            <input type="text" class="form-control" id="medicineUnit">
         </div>
         <div class="form-group mt-3">
             <label for="medicineAmount" class="bmd-label-floating">Số Lượng</label>
@@ -98,19 +114,149 @@
         </div>
         <div class="form-group">
             <label for="medicineUsage">Cách Dùng</label>
-            <select class="form-control selectpicker" data-style="btn btn-link" id="medicineUsage">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
+            <select class="form-control" data-style="btn btn-link" id="medicineUsage">
+                <option value="" selected disabled hidden></option>
+                {% for item in config['drug_usage'] %}
+                  <option value="{{ item }}" >{{ item }}</option>
+                {% endfor %}
             </select>
         </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-info">Thêm</button>
+        <button type="button" class="btn btn-info" onclick="precriptionAdd()">Thêm</button>
       </div>
     </div>
   </div>
 </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="addPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Thêm Bệnh Nhân</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="patientName" class="bmd-label-floating">Họ và Tên</label>
+            <input type="text" class="form-control" id="patientName">
+          </div>
+          <div class="form-group">
+              <label for="patientGender">Giới Tính</label>
+              <select class="form-group" data-style="btn btn-link" id="patientGender">
+                  <option value="" selected disabled hidden></option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+              </select>
+          </div>
+          <div class="form-group">
+              <label for="patientYear" class="bmd-label-floating">Năm Sinh</label>
+              <input type="number" class="form-control" id="patientYear">
+          </div>
+          <div class="form-group">
+              <label for="patientAddress" class="bmd-label-floating">Địa Chỉ</label>
+              <textarea class="form-control" id="patientAddress"></textarea>
+          </div>
+          <div class="modal-footer">
+            <h3 id="notification"></h3>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-info" onclick="addPatient();">Thêm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock %}
+{% block script %}
+    <script>
+      var prescriptionData = [];
+      var medicineData = [];
+      var prescriptionCounter = 1;
+      function addPatient() {
+          $.ajax({
+              url: 'api/addPatient',
+              contentType: 'application/json',
+              type: 'POST',
+              dataType: 'json',
+              data: JSON.stringify( {
+                name: $('#patientName').val(),
+                yob: $('#patientYear').val(),
+                gender: $('#patientGender').val(),
+                address: $('#patientAddress').val()
+              }),
+          }).done(function(data) {
+            if(data['message'] == 'Quá Số Lượng Bệnh Nhân Tối Đa'){
+              $('#notification').text(data['message']);
+            }
+            else{
+              $('.typeahead').typeahead('val', data['name']);  
+              $('.typeahead').focus(); 
+            }
+             
+          });
+          $('#addPatient').modal('hide')
+      };
+      $(document).ready( function () {
+        var patients = new Bloodhound({
+          datumTokenizer: Bloodhound.tokenizers.whitespace,
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: 'api/getPatientsName'
+        });
+        $('.typeahead').typeahead({
+          minLength: 1,
+          highlight: true
+        },
+        {
+          name: 'patients',
+          source: patients
+        });
 
+        $.ajax({
+          url: 'api/getMedicines',
+          type: 'GET',
+          dataType: 'json',
+        }).done(function(data){
+          medicineData = data;
+           for (let item of medicineData){
+              $("#medicineSelect").append(new Option(item['name'], item['id']));
+            }  
+        }); 
+        $('#examDate').val(new Date().toJSON().slice(0,10));
+      });
+      function medicineSelect(){
+        medic = medicineData[$("#medicineSelect").val() - 1] ;
+        unit = medic['unit'];
+        $('#medicineUnit').val(unit);
+        $('#medicineUnit').focus();
+      }
+      function precriptionAdd(){
+        prescriptionData.push({
+          medicine_id: $('#medicineSelect').val() ,
+          amount: $('#medicineAmount').val(),
+          usage: $('#medicineUsage').val(),
+        });
+        var markup = "<tr><td>"+ (prescriptionCounter++) +"</td><td>"+ $('#medicineSelect option:selected').text() +"</td><td>"+ $('#medicineUnit').val()  +"</td><td>"+ $('#medicineAmount').val() +"</td><td>"+ $('#medicineUsage').val() +"</td></tr>";
+        $("table tbody").append(markup);
+        $('#addMedicineModal').modal('hide')
+      }
+      function createMedicalForm(){
+        $.ajax({
+          url: 'api/createMedicalForm',
+          contentType: 'application/json',
+          type: 'POST',
+          dataType: 'json',
+          data: JSON.stringify( {
+            symptom: $('#symptom').val(),
+            disease_prediction: $('#diagnose').val(),
+            patient_name: $('#customerName').val(),
+            prescription: prescriptionData
+          }),
+      }).done(function(data){
+        window.location.href = data['url_redirect'];
+      });
+      }
+    </script>
+{% endblock script %}

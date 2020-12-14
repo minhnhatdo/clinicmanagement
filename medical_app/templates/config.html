@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% block title %}
+<title>Configuration</title>
+{% endblock title %}
+{% block body %}
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title ">Tuỳ Chỉnh</h4>
+    </div>
+    <div class="card-body">
+        <form method="post"
+                action="{{ url_for('config') }}"
+                enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="symptom" class="bmd-label-floating">Bệnh Nhân tối đa trong Ngày</label>
+                        <input type="number" class="form-control" name="max_patients_per_day" value="{{ config['max_patients_per_day'] }}">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="symptom" class="bmd-label-floating">Tiền Khám</label>
+                        <input type="number" class="form-control" name="exam_cost" value="{{ config['exam_cost'] }}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="symptom" class="bmd-label-floating">Cách Dùng</label>
+                        <input type="text" class="form-control" name="drug_usage" value="{{ config['drug_usage'] }}">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="symptom" class="bmd-label-floating">Đơn vị(Thuốc)</label>
+                        <input type="text" class="form-control" name="drug_unit" value="{{ config['drug_unit'] }}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="symptom" class="bmd-label-floating">Loại Bệnh</label>
+                        <input type="text" class="form-control" name="desease" value="{{ config['desease'] }}">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-info" type="submit">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock body %}

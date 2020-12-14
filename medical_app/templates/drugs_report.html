@@ -7,23 +7,23 @@
 {% block body %}
 <div class="d-flex justify-content-end">
     <div class="form-group">
-        <label for="monthFitler" class="bmd-label-floating">Tháng</label>
-        <input type="number" class="form-control" id="monthFitler" >
+        <label for="monthFitler" >Tháng</label>
+        <input type="number" class="form-control" id="monthFilter" >
     </div>
     <div class="form-group">
-        <label for="yearFitler" class="bmd-label-floating">Năm</label>
-        <input type="number" class="form-control" id="yearFitler" >
+        <label for="yearFitler">Năm</label>
+        <input type="number" class="form-control" id="yearFilter" >
     </div>
-    <button type="button" class="btn btn-info ml-2">Lọc</button>
+    <button type="button" class="btn btn-info ml-2" onclick="dateFilter()">Lọc</button>
 </div>
 <div class="card">
     <div class="card-header card-header-info">
       <h4 class="card-title ">Báo Cáo Sử Dụng Thuốc</h4>
-      <p class="card-category">Tháng 12/2020</p>
+      <p class="card-category" id="monthDisplay"></p>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table" id="patients">
+      <div>
+        <table class="table" id="drug_report">
             <thead class="text-info">
                 <th>STT</th>
                 <th>Thuốc</th>
@@ -31,24 +31,73 @@
                 <th>Số Lượng</th>
                 <th>Số Lần Dùng</th>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-            </tbody>
         </table>
       </div>
     </div>
 </div>
 {% endblock body %}
+{% block script %}
+    <script>
+        var drugReport;
+        var year;
+        var month;
+        $(document).ready( function () {
+            var currentDate = new Date();
+            year = currentDate.getFullYear();
+            month = currentDate.getMonth() + 1;
+            $('#monthFilter').val(month);
+            $('#yearFilter').val(year);
+            $('#monthDisplay').text('Tháng ' + month + '/' + year);
+            drugReport = $('#drug_report').DataTable({
+                "searching": false,
+                "ajax": "api/getDrugReport/" + month + '/' + year,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        render: function(data, type, row, meta) {
+                            return meta.row;
+                        }
+                    },
+                    {
+                        targets: [1],
+                        data: "name",
+                        render: function(data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [2],
+                        data: "unit",
+                        render: function(data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [3],
+                        data: "amount",
+                        render: function(data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [4],
+                        data: "usage_time",
+                        render: function(data, type, row, meta) {
+                            return data;
+                        }
+                    }
+                ],
+                
+            });
+            
+        } );
+        function dateFilter(){
+            var monthVal = $('#monthFilter').val();
+            var yearVal = $('#yearFilter').val();
+            $('#monthDisplay').text('Tháng ' + monthVal + '/' + yearVal);
+            if(monthVal <= month || yearVal <= year){
+                drugReport.ajax.url("api/getDrugReport/" + monthVal + '/' + yearVal).load();
+            }
+        }
+    </script>
+{% endblock script %}

@@ -10,8 +10,8 @@
       <h4 class="card-title ">Danh Sách Bệnh Nhân</h4>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table" id="patients">
+      <div>
+        <table class="table" id="medical_forms">
             <thead class="text-info">
                 <th>STT</th>
                 <th>Họ Tên</th>
@@ -19,49 +19,60 @@
                 <th>Loại Bệnh</th>
                 <th>Triệu Chứng</th>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-            </tbody>
         </table>
       </div>
     </div>
 </div>
-<button class="btn btn-primary" onclick="convert()">Convert</button>
 {% endblock %}
 
 {% block script %}
 <script>
-        var convertTableToJson = function()
-            {
-                var rows = [];
-                $('table tr').each(function(i, n){
-                    var $row = $(n);
-                    rows.push({
-                        stt: $row.find('td:eq(0)').text(),
-                        name:   $row.find('td:eq(1)').text(),
-                        dob:    $row.find('td:eq(2)').text(),
-                        diagnose:       $row.find('td:eq(3)').text(),
-                        symptom:         $row.find('td:eq(4)').text(),
-                    });
-                });
-
-                return JSON.stringify(rows);
-            };
-        function convert(){
-            console.log(convertTableToJson ());
-        };
+    $(document).ready( function () {
+        //currentDate = new Date().toJSON().slice(0,10);
+        //$('#dataDate').text('Ngày ' + currentDate.replace(/-/g,'/'));
+        var MedicalFormtable = $('#medical_forms').DataTable({
+            "searching": false,
+            "ajax": "api/getMedicalforms",
+            columnDefs: [
+                {
+                    targets: [0],
+                    render: function(data, type, row, meta) {
+                        return meta.row;
+                    }
+                },
+                {
+                    targets: [1],
+                    data: "name",
+                    render: function(data, type, row, meta) {
+                        return data;
+                    }
+                },
+                {
+                    targets: [2],
+                    data: "date",
+                    render: function(data, type, row, meta) {
+                        date = new Date(data);
+                        return date.toISOString().slice(0,10);
+                    }
+                },
+                {
+                    targets: [3],
+                    data: "disease_prediction",
+                    render: function(data, type, row, meta) {
+                        return data;
+                    }
+                },
+                {
+                    targets: [4],
+                    data: "symptom",
+                    render: function(data, type, row, meta) {
+                        return data;
+                    }
+                }
+            ],
+            
+        });
+        
+    } );
 </script>
 {% endblock %}

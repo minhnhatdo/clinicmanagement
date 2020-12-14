@@ -1,0 +1,18 @@
+{
+    "max_patients_per_day": 40,
+    "drug_usage": [
+        1,
+        2,
+        3,
+        4
+    ],
+    "exam_cost": 30000,
+    "desease": [
+        "Bệnh A",
+        "Bệnh B",
+        "Bệnh C",
+        "Bệnh D",
+        "Bệnh E"
+    ],
+    "drug_unit": ["Chai", "Vỉ"]
+}

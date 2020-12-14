@@ -13,14 +13,14 @@
             <div class="col">
                 <div class="card mb-0">
                   <div class="card-body">
-                    Họ và tên: Đỗ Minh Nhật
+                    Họ và tên: {{ session['patient_name'] }}
                   </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card mb-0">
                   <div class="card-body">
-                    Ngày Khám: 20/12/2020
+                    Ngày Khám: {{ session['date'] }}
                   </div>
                 </div>
             </div>
@@ -30,21 +30,35 @@
             <div class="col">
                 <div class="card mt-0">
                   <div class="card-body">
-                    Tiền Khám: 30.000VND
+                    Tiền Khám: {{ "{:,.1f}".format(session['exam_money']) }}VND
                   </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card mt-0">
                   <div class="card-body">
-                    Tiền Thuốc 150.000VND
+                    Tiền Thuốc {{ "{:,.1f}".format(session['drug_money']) }}VND
                   </div>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-info">Hoàn Thành</button>
+            <button type="button" class="btn btn-info" id="createBillButton" onclick="createBill()">Hoàn Thành</button>
         </div>
     </div>
 </div>
 {% endblock %}
+{% block script %}
+  <script>
+    function createBill(){
+
+      $.ajax({
+        url: 'api/createBill',
+        method: 'get'
+      }).done(function(data){
+        $('#createBillButton').html('<i class="material-icons">done</i>');
+        window.location.href = data['url_redirect'];
+      });
+    };
+  </script>
+{% endblock script %}

@@ -7,23 +7,23 @@
 {% block body %}
 <div class="d-flex justify-content-end">
     <div class="form-group">
-        <label for="monthFitler" class="bmd-label-floating">Tháng</label>
+        <label for="monthFitler" >Tháng</label>
         <input type="number" class="form-control" id="monthFitler" >
     </div>
     <div class="form-group">
-        <label for="yearFitler" class="bmd-label-floating">Năm</label>
+        <label for="yearFitler">Năm</label>
         <input type="number" class="form-control" id="yearFitler" >
     </div>
-    <button type="button" class="btn btn-info ml-2">Lọc</button>
+    <button type="button" class="btn btn-info ml-2" onclick="dateFilter()">Lọc</button>
 </div>
 <div class="card">
     <div class="card-header card-header-info">
-      <h4 class="card-title ">Báo Cáo Doanh Thu Theo Ngày</h4>
-      <p class="card-category">Tháng 12/2020</p>
+      <h4 class="card-title ">Báo Cáo Doanh Thu Tháng</h4>
+      <p class="card-category" id="monthDisplay"></p>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table" id="patients">
+      <div >
+        <table class="table" id="sales_report">
             <thead class="text-info">
                 <th>STT</th>
                 <th>Ngày</th>
@@ -31,24 +31,74 @@
                 <th>Doanh Thu</th>
                 <th>Tỉ Lệ</th>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Minh Nhật</td>
-                    <td>20/10/2000</td>
-                    <td>Rối loạn tiền đình</td>
-                    <td>Đau đầu, nhức đầu kéo dài</td>
-                </tr>
-            </tbody>
         </table>
       </div>
     </div>
 </div>
 {% endblock body %}
+{% block script %}
+    <script>
+        var saleReportTable;
+        var year;
+        var month;
+        $(document).ready( function () {
+            var currentDate = new Date();
+            year = currentDate.getFullYear();
+            month = currentDate.getMonth() + 1;
+            $('#monthFitler').val(month);
+            $('#yearFitler').val(year);
+            $('#monthDisplay').text('Tháng ' + month + '/' + year);
+            saleReportTable = $('#sales_report').DataTable({
+                "searching": false,
+                "ajax": "api/getSalesReport/" + month + '/' + year,
+                columnDefs: [
+                    {
+                        targets: [0],
+                        render: function(data, type, row, meta) {
+                            return meta.row;
+                        }
+                    },
+                    {
+                        targets: [1],
+                        data: "date",
+                        render: function(data, type, row, meta) {
+                            date = new Date(data);
+                            return date.toISOString().slice(0,10);
+                        }
+                    },
+                    {
+                        targets: [2],
+                        data: "name",
+                        render: function(data, type, row, meta) {
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [3],
+                        data: "sales",
+                        render: function(data, type, row, meta) {
+                            return new Intl.NumberFormat().format(data);
+                        }
+                    },
+                    {
+                        targets: [4],
+                        data: "percent",
+                        render: function(data, type, row, meta) {
+                            return data.toFixed(2) + "%";
+                        }
+                    }
+                ],
+                
+            });
+            
+        } );
+        function dateFilter(){
+            var monthVal = $('#monthFitler').val();
+            var yearVal = $('#yearFitler').val();
+            $('#monthDisplay').text('Tháng ' + monthVal + '/' + yearVal);
+            if(monthVal <= month || yearVal <= year){
+                saleReportTable.ajax.url("api/getSalesReport/" + monthVal + '/' + yearVal).load();
+            }
+        }
+    </script>
+{% endblock script %}

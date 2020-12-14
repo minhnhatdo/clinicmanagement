@@ -16,6 +16,7 @@
   <link href="{{ url_for('static', filename='assets/css/material-dashboard.css') }}" rel="stylesheet" />
   <!-- Latest compiled and minified CSS Select Picker-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+  {% block style %}{% endblock style %}
 </head>
 
 <body>
@@ -46,10 +47,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
     <!--  DataTables.net Plugin, full documentation here: https://datatables.net/  -->
     <script src="{{ url_for('static', filename='assets/js/plugins/jquery.dataTables.min.js') }}"></script>
-    <!--	Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
-    <script src="{{ url_for('static', filename='assets/js/plugins/bootstrap-selectpicker.js') }}"></script>
-    {% block script %}
-    {% endblock %}
+    <!--Typeahead-->
+    <script src="{{ url_for('static', filename='assets/js/typeahead.bundle.js') }}"></script>
+    {% block script %}{% endblock %}
 </body>
 
 </html>
